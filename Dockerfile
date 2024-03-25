@@ -27,5 +27,5 @@ RUN wget -qO- https://github.com/novnc/noVNC/archive/v1.2.0.tar.gz | tar xz --st
 # Expose port 8080 for noVNC
 EXPOSE 8080
 
-# Start noVNC server
-CMD ["bash", "-c", "Xvfb :1 -screen 0 1024x768x16 & fluxbox & x11vnc -display :1 -nopw -listen localhost -xkb -forever & websockify --web /app 8080 localhost:5900"]
+# Start Xvfb and fluxbox
+CMD Xvfb :1 -screen 0 1024x768x16 & fluxbox -display :1 & x11vnc -display :1 -nopw -listen localhost -xkb -forever -shared -rfbport 5901 && websockify --web /app 8080 localhost:5901
