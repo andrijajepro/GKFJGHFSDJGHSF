@@ -1,6 +1,9 @@
 # Use the latest Ubuntu image
 FROM ubuntu:latest
 
+# Set noninteractive mode for apt
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Update and install required packages
 RUN apt-get update && apt-get install -y \
     python3 \
