@@ -15,7 +15,9 @@ RUN apt-get update && apt-get install -y \
     xvfb \
     supervisor \
     wget \
-    curl
+    curl \
+    net-tools \
+    xterm
 
 # Set the working directory
 WORKDIR /app
@@ -27,5 +29,11 @@ RUN wget -qO- https://github.com/novnc/noVNC/archive/v1.2.0.tar.gz | tar xz --st
 # Expose port 8080 for noVNC
 EXPOSE 8080
 
-# Start Xvfb and fluxbox
-CMD Xvfb :1 -screen 0 1024x768x16 & fluxbox -display :1 & x11vnc -display :1 -nopw -listen localhost -xkb -forever -shared -rfbport 5901 && websockify --web /app 8080 localhost:5901
+# Start Xvfb, Fluxbox, x11vnc, and WebSockify
+CMD Xvfb :1 -screen 0 1024x768x16 +extension RANDR & \
+    fluxbox -display :1 & \
+    x11vnc -display :1 -nopw -listen localhost -xkb -forever -shared -rfbport 5900 & \
+    xterm -display :1 & \
+    echo "Waiting for Xvfb to start..." && sleep 5 && \
+    echo "Starting WebSockify..." && \
+    websockify --web /app 8080 localhost:5900
