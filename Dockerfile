@@ -31,9 +31,12 @@ EXPOSE 8080
 
 # Start Xvfb, Fluxbox, x11vnc, and WebSockify
 CMD Xvfb :1 -screen 0 1024x768x16 +extension RANDR & \
-    fluxbox -display :1 & \
-    x11vnc -display :1 -nopw -listen localhost -xkb -forever -shared -rfbport 5900 & \
-    xterm -display :1 & \
     echo "Waiting for Xvfb to start..." && sleep 5 && \
+    fluxbox -display :1 & \
+    echo "Starting Fluxbox..." && \
+    x11vnc -display :1 -nopw -listen localhost -xkb -forever -shared -rfbport 5900 & \
+    echo "Starting x11vnc..." && \
+    sleep 5 && \
+    xterm -display :1 -geometry 100x30+0+0 -e echo "X11vnc is running on display :1" & \
     echo "Starting WebSockify..." && \
     websockify --web /app 8080 localhost:5900
